@@ -6,12 +6,35 @@ import { Model } from 'mongoose';
 import { Product } from 'src/products/entities/product.entity';
 import * as bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
+import { faker } from '@faker-js/faker';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel('Users') private readonly userModel: Model<Product>,
   ) {}
+
+  async fakeUserByFaker(number: number) {
+    for (let i = 0; i < number; i++) {
+      await this.create({
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        name: `${faker.name.firstName()} ${faker.name.middleName()} ${faker.name.lastName()}`,
+        phoneNum: parseInt(
+          `3${faker.datatype.number({ min: 10000000, max: 99999999 })}`,
+        ),
+        status: 'OFFLINE',
+        role: 'CUSTOMER',
+      });
+    }
+    return { message: 'Fake user complete', numberOfUsers: number };
+  }
+
+  async findUserByEmail(email: string) {
+    const userExists = await this.userModel.findOne({ email });
+
+    return userExists;
+  }
 
   async create(createUserDto: CreateUserDto) {
     const { password, role, email } = createUserDto;
@@ -58,6 +81,8 @@ export class UsersService {
 
   async remove(id: string) {
     const user = await this.findOne(id);
+
+    await user.remove();
 
     return { message: 'Delete account success', data: { id: user._id } };
   }

@@ -17,6 +17,12 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiOperation({ summary: 'Fake user by faker "number" times' })
+  @Get('/faker/:number')
+  fakeUserByFaker(@Param('number') number: number) {
+    return this.usersService.fakeUserByFaker(number);
+  }
+
   @ApiOperation({
     summary: `Create user`,
   })
@@ -39,6 +45,14 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
+  }
+
+  @ApiOperation({
+    summary: `Get user by email`,
+  })
+  @Get('/email/:email')
+  findUserByEmail(@Param('email') email: string) {
+    return this.usersService.findUserByEmail(email);
   }
 
   @ApiOperation({

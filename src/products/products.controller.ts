@@ -26,6 +26,14 @@ export class ProductsController {
   }
 
   @ApiOperation({
+    summary: `Re fill all products`,
+  })
+  @Get('refill')
+  async refillProduct() {
+    return await this.productsService.refillProduct();
+  }
+
+  @ApiOperation({
     summary: `Create a product`,
   })
   @Post()
@@ -82,5 +90,16 @@ export class ProductsController {
   @Get('search/:search')
   async searchByName(@Param('search') productName: string) {
     return this.productsService.searchByName(productName);
+  }
+
+  @ApiOperation({
+    summary: `Product sort order by Ascending (-1) Descending (1)`,
+  })
+  @Get('sort/:sort/:orderBy')
+  async sortByPrice(
+    @Param('sort') sort: string,
+    @Param('orderBy') orderBy: number,
+  ) {
+    return this.productsService.sortBy(sort, orderBy);
   }
 }

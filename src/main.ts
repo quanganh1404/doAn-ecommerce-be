@@ -13,6 +13,9 @@ async function bootstrap() {
     .addTag('Users')
     .addTag('Category')
     .addTag('Products')
+    .addTag('Orders')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
+
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -21,4 +24,5 @@ async function bootstrap() {
   app.enableCors();
   await app.listen(8080);
 }
+
 bootstrap();

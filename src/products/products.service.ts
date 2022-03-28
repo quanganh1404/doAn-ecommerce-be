@@ -14,6 +14,18 @@ export class ProductsService {
     private readonly categoryService: CategoryService,
   ) {}
 
+  async refillProduct() {
+    const products = await this.findAll();
+    products.forEach(async (product) => {
+      const productQuantity: number = parseInt(product.countInStock);
+
+      if (!(productQuantity > 0)) await product.update({ countInStock: +10 });
+      else await product.update({ countInStock: productQuantity + 10 });
+    });
+
+    return { message: 'Refill success' };
+  }
+
   async create(createProductDto: CreateProductDto) {
     const { name, slug, categoryId } = createProductDto;
 
@@ -46,6 +58,19 @@ export class ProductsService {
 
   async findAll() {
     return await this.productModel.find();
+  }
+
+  async sortBy(sort: string, orderBy: number) {
+    let result;
+    if (sort == 'price')
+      result = await this.productModel.find().sort({ price: orderBy });
+
+    if (sort == 'rating')
+      result = await this.productModel.find().sort({ rating: orderBy });
+    if (sort == 'countInStock')
+      result = await this.productModel.find().sort({ countInStock: orderBy });
+
+    return result;
   }
 
   async findOne(id: string) {
